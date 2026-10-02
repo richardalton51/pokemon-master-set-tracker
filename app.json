@@ -3,9 +3,10 @@
     "name": "pokemon-card-viewer",
     "slug": "pokemon-card-viewer",
     "version": "1.0.0",
+    "scheme": "pokemon-card-viewer",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
-    "userInterfaceStyle": "light",
+    "userInterfaceStyle": "dark",
     "ios": {
       "supportsTablet": true
     },
@@ -20,6 +21,14 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "plugins": [
+      "expo-router",
+      "expo-status-bar",
+      "expo-system-ui"
+    ],
+    "experiments": {
+      "typedRoutes": true
     }
   }
 }
