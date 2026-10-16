@@ -23,6 +23,7 @@ import {
 import { useCollection, SelectedCard } from '@/lib/collection';
 import { useThemeColors } from '@/lib/theme';
 import { getEurToGbpRate } from '@/lib/fx';
+import { rarityOf, useRarityMap } from '@/lib/rarity';
 
 type PrintingRow = {
   cardId: string;
@@ -53,6 +54,7 @@ export default function PokemonDetailScreen() {
   const { collection, toggleOwned, setSelectedCard } = useCollection();
   const entry = collection[dexId];
   const colors = useThemeColors();
+  const rarities = useRarityMap();
 
   const [result, setResult] = useState<{ dexId: number; printings: PrintingRow[] } | null>(null);
   const [error, setError] = useState<{ dexId: number; message: string } | null>(null);
@@ -144,8 +146,12 @@ export default function PokemonDetailScreen() {
     if (!printings) return printings;
     const trimmed = query.trim().toLowerCase();
     if (!trimmed) return printings;
-    return printings.filter((row) => row.setName.toLowerCase().includes(trimmed));
-  }, [printings, query]);
+    return printings.filter(
+      (row) =>
+        row.setName.toLowerCase().includes(trimmed) ||
+        rarityOf(rarities, row.cardId)?.toLowerCase().includes(trimmed),
+    );
+  }, [printings, query, rarities]);
 
   const cardPricing = pricing && pricing.cardId === selectedCardId ? pricing.data : null;
   const cardPricingError =
@@ -242,7 +248,7 @@ export default function PokemonDetailScreen() {
         {printings && (
           <TextInput
             style={[styles.search, { borderColor: colors.border, color: colors.text }]}
-            placeholder="Filter by set name"
+            placeholder="Filter by set or rarity"
             placeholderTextColor={colors.textMuted}
             value={query}
             onChangeText={setQuery}
@@ -279,6 +285,11 @@ export default function PokemonDetailScreen() {
                 <View style={styles.rowInfo}>
                   <Text style={[styles.setName, { color: colors.textMuted }]}>{item.setName}</Text>
                   <Text style={[styles.cardName, { color: colors.text }]}>{item.name}</Text>
+                  {rarityOf(rarities, item.cardId) && (
+                    <Text style={[styles.setName, { color: colors.textMuted }]}>
+                      {rarityOf(rarities, item.cardId)}
+                    </Text>
+                  )}
                 </View>
                 {isSelected && <Text style={[styles.selectedMark, { color: colors.accent }]}>✓</Text>}
               </Pressable>

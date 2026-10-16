@@ -17,7 +17,9 @@ export type CollectionEntry = {
   card?: SelectedCard;
 };
 
-export type Collection = Record<number, CollectionEntry>;
+export type CollectionKey = string | number;
+
+export type Collection = Record<string, CollectionEntry>;
 
 export async function loadCollection(): Promise<Collection> {
   const raw = await AsyncStorage.getItem(STORAGE_KEY);
@@ -43,8 +45,8 @@ export function persistCollection(collection: Collection) {
 export type CollectionContextValue = {
   collection: Collection;
   loaded: boolean;
-  toggleOwned: (dexId: number) => void;
-  setSelectedCard: (dexId: number, card: SelectedCard) => void;
+  toggleOwned: (key: CollectionKey) => void;
+  setSelectedCard: (key: CollectionKey, card: SelectedCard) => void;
 };
 
 export const CollectionContext = createContext<CollectionContextValue | null>(null);

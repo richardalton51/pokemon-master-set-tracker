@@ -5,6 +5,7 @@ import { StatusBar } from 'expo-status-bar';
 import {
   Collection,
   CollectionContext,
+  CollectionKey,
   CollectionContextValue,
   SelectedCard,
   loadCollection,
@@ -24,22 +25,22 @@ export default function RootLayout() {
     });
   }, []);
 
-  const toggleOwned = useCallback((dexId: number) => {
+  const toggleOwned = useCallback((key: CollectionKey) => {
     setCollection((prev) => {
       const next: Collection = {
         ...prev,
-        [dexId]: { ...prev[dexId], owned: !prev[dexId]?.owned },
+        [key]: { ...prev[key], owned: !prev[key]?.owned },
       };
       persistCollection(next);
       return next;
     });
   }, []);
 
-  const setSelectedCard = useCallback((dexId: number, card: SelectedCard) => {
+  const setSelectedCard = useCallback((key: CollectionKey, card: SelectedCard) => {
     setCollection((prev) => {
       const next: Collection = {
         ...prev,
-        [dexId]: { owned: prev[dexId]?.owned ?? false, card },
+        [key]: { owned: prev[key]?.owned ?? false, card },
       };
       persistCollection(next);
       return next;
@@ -55,7 +56,7 @@ export default function RootLayout() {
     <CollectionContext.Provider value={value}>
       <Stack
         screenOptions={{
-          title: 'Pokémon Master Set Tracker',
+          title: 'Master Set Tracker',
           headerStyle: { backgroundColor: colors.background },
           headerTintColor: colors.text,
           contentStyle: { backgroundColor: colors.background },
